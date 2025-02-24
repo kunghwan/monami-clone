@@ -22,13 +22,16 @@ const App = () => {
   });
   const [p1, setP1] = useState<Person>({ name: "sdf", age: 50 });
 
-  const [pets, setPets] = useState<Pet>([]);
-  const [people, setPeople] = useState<Person>([]);
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [people, setPeople] = useState<Person[]>([]);
 
   useEffect(() => {
-    setPets(...prev, pet1);
-    setPeople(...prev, p1);
-  }, []);
+    setPets((prev) => [...prev, pet1]);
+    setPeople((prev) => [...prev, p1]);
+
+    console.log("Pets Array:", pets);
+    console.log("People Array:", people);
+  }, [pet1, p1]);
 
   return (
     <div>
