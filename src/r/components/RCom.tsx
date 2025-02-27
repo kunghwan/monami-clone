@@ -1,31 +1,27 @@
-import React from "react";
-import { Container, Form } from "../../ui";
+import React from "react"
+import { Container, Form } from "../../ui"
 
 export interface RComProps {
-  id: string;
-  title: string;
-  value: string | number;
-  placeholder: string;
+  id: string
+  title: string
+  value: string | number
+  placeholder: string
 }
 
-const RComContainer = ({
-  id,
-  title,
-  children,
-}: { id: string; title: string } & React.PropsWithChildren) => {
+const RComContainer = ({ id, title, children }: { id: string; title: string } & React.PropsWithChildren) => {
   return (
     <Container.Col className="gap-y-1">
       <Form.Label htmlFor={id}>{title}</Form.Label>
       {children}
     </Container.Col>
-  );
-};
+  )
+}
 
 export interface RComInputProps extends RComProps, React.PropsWithChildren {
-  ref: React.Ref<HTMLInputElement>;
-  onChangeText: (value: string) => void;
-  input?: Form.InputProps;
-  isShowing?: boolean;
+  ref: React.Ref<HTMLInputElement>
+  onChangeText: (value: string) => void
+  input?: Form.InputProps
+  isShowing?: boolean
 }
 
 export const Input = ({
@@ -64,24 +60,16 @@ export const Input = ({
         )
       )}
     </RComContainer>
-  );
-};
-
-export interface RComSelectProps extends RComProps {
-  ref: React.Ref<HTMLSelectElement>;
-  onSelectOption: (value: string) => void;
-  options: string[];
+  )
 }
 
-export const Select = ({
-  id,
-  onSelectOption,
-  options,
-  placeholder,
-  ref,
-  title,
-  value,
-}: RComSelectProps) => {
+export interface RComSelectProps extends RComProps {
+  ref: React.Ref<HTMLSelectElement>
+  onSelectOption: (value: string) => void
+  options: string[]
+}
+
+export const Select = ({ id, onSelectOption, options, placeholder, ref, title, value }: RComSelectProps) => {
   return (
     <RComContainer id={id} title={title}>
       <select
@@ -100,5 +88,5 @@ export const Select = ({
         ))}
       </select>
     </RComContainer>
-  );
-};
+  )
+}

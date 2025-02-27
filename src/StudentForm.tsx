@@ -1,73 +1,59 @@
-import { useState, FormEvent, ChangeEvent } from "react";
-import { SetStudents } from "./@types/react";
+import { useState, FormEvent, ChangeEvent } from "react"
+import { SetStudents } from "./@types/react"
 
 interface Props {
-  students: Student[];
-  setStudents: SetStudents;
+  students: Student[]
+  setStudents: SetStudents
 
-  payload?: Student;
-  onCancel?: () => void;
-  isEdit?: boolean;
+  payload?: Student
+  onCancel?: () => void
+  isEdit?: boolean
 }
 
-const StudentForm = ({
-  setStudents,
-  students,
-  isEdit,
-  onCancel,
-  payload,
-}: Props) => {
+const StudentForm = ({ setStudents, students, isEdit, onCancel, payload }: Props) => {
   const [student, setStudent] = useState<Student>(
     //! 조건 또는 값 ?? 앞의 조건 또는 값이 없을 때 값을 넣음
     payload ?? {
       mobile: "",
       name: "",
     }
-  );
+  )
 
   const onChangeName = (e: ChangeEvent<HTMLSelectElement>) => {
-    setStudent((prev) => ({ ...prev, name: e.target.value as StudentName }));
-  };
+    setStudent((prev) => ({ ...prev, name: e.target.value as StudentName }))
+  }
 
   const onChangeMobile = (e: ChangeEvent<HTMLInputElement>) => {
-    setStudent((prev) => ({ ...prev, mobile: e.target.value }));
-  };
+    setStudent((prev) => ({ ...prev, mobile: e.target.value }))
+  }
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (student.name.length === 0) {
-      return alert("학생 이름을 선택해주세요.");
+      return alert("학생 이름을 선택해주세요.")
     }
     if (student.mobile.length !== 11) {
-      return alert("학생 연락처를 확인해주세요.");
+      return alert("학생 연락처를 확인해주세요.")
     }
 
     if (isEdit) {
       setStudents((prev) =>
-        prev.map((item) =>
-          item.name === student.name
-            ? { ...item, mobile: student.mobile }
-            : item
-        )
-      );
-      return onCancel && onCancel();
+        prev.map((item) => (item.name === student.name ? { ...item, mobile: student.mobile } : item))
+      )
+      return onCancel && onCancel()
     }
 
-    const found = students.find((item) => item.name === student.name);
+    const found = students.find((item) => item.name === student.name)
     if (found) {
-      return alert("이미 추가된 학생입니다.");
+      return alert("이미 추가된 학생입니다.")
     }
-    setStudents((prev) => [student, ...prev]);
-    setStudent({ mobile: "", name: "" });
-  };
+    setStudents((prev) => [student, ...prev])
+    setStudent({ mobile: "", name: "" })
+  }
 
   return (
-    <form
-      action=""
-      onSubmit={onSubmit}
-      className="flex flex-col p-5 max-w-75 mx-auto"
-    >
+    <form action="" onSubmit={onSubmit} className="flex flex-col p-5 max-w-75 mx-auto">
       <label htmlFor="name" className="text-xs text-gray-500 mb-1">
         학생이름
       </label>
@@ -102,18 +88,15 @@ const StudentForm = ({
           {isEdit ? "EDIT" : "ADD"}
         </button>
         {isEdit && (
-          <button
-            type="button"
-            className="border px-2.5 rounded text-gray-200 hover:text-gray-500 cursor-pointer"
-          >
+          <button type="button" className="border px-2.5 rounded text-gray-200 hover:text-gray-500 cursor-pointer">
             취소
           </button>
         )}
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default StudentForm;
+export default StudentForm
 
-const names: StudentName[] = ["강산", "강찬희", "김영화", "유경환", "허승이"];
+const names: StudentName[] = ["강산", "강찬희", "김영화", "유경환", "허승이"]

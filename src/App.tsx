@@ -1,29 +1,31 @@
-import { Container, Button, texts, Form } from "./ui";
+import { Container, Button, Text, Form } from "./ui"
 
 const App = () => {
   return (
     <div>
-      <h1 className="text-red-500">App</h1>
+      <Text.H1 className="text-red-600">App</Text.H1>
+      <Text.H2 className="text-yellow-400">App</Text.H2>
+      <Text.P>App</Text.P>
 
-      <Container.Col>
-        <p>sdf</p>
-        <p>sdf</p>
+      <Container.Col className="border gap-y-5">
+        <p>123123</p>
+        <p>123123</p>
       </Container.Col>
+
       <Container.Row>
-        <p>sdf</p>
-        <p>sdf</p>
+        <p>123123</p>
+        <p>123123</p>
       </Container.Row>
-      <Button.Opacity className="bg-sky-200">sdfsdf</Button.Opacity>
-      <Button.Pressable>sdfdsf</Button.Pressable>
-      <Button.Spring className="bg-red-300">sdfdsf</Button.Spring>
-      <texts.H1 className="bg-green-200">dsf</texts.H1>
-      <texts.H2 className="bg-green-900">dsf</texts.H2>
-      <texts.P className="bg-green-900">dDSFS</texts.P>
+      <Button.Opacity className="bg-sky-500 hover:bg-sky-400">Opacity Button</Button.Opacity>
+      <Button.Pressable className="bg-teal-600">Pressable Button</Button.Pressable>
 
-      <Form.Form onSubmit={() => console.log("submit")}>dsf</Form.Form>
-      <Form.Label>dsf</Form.Label>
+      <Form.Form onSubmit={() => console.log("submit...")}>
+        <Form.Label htmlFor="rt">random text</Form.Label>
+        <Form.Text id="rt" />
+        <Button.Spring className="bg-red-600">Pressable Button</Button.Spring>
+      </Form.Form>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

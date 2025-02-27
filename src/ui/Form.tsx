@@ -1,25 +1,19 @@
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "tailwind-merge"
 
-export type FormProps = React.DetailedHTMLProps<
-  React.FormHTMLAttributes<HTMLFormElement>,
-  HTMLFormElement
->;
+export type FormProps = React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>
 
 export const Form = (props: FormProps) => (
   <form
     {...props}
     className={twMerge("flex flex-col gap-y-2.5", props?.className)}
     onSubmit={(e) => {
-      e.preventDefault();
-      props?.onSubmit && props.onSubmit(e);
+      e.preventDefault()
+      props?.onSubmit && props.onSubmit(e)
     }}
   />
-);
+)
 
-export type InputProps = React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->;
+export type InputProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 export const Text = (props: InputProps) => (
   <input
     {...props}
@@ -29,15 +23,9 @@ export const Text = (props: InputProps) => (
       props?.className
     )}
   />
-);
+)
 
-export type LabelProps = React.DetailedHTMLProps<
-  React.LabelHTMLAttributes<HTMLLabelElement>,
-  HTMLLabelElement
->;
+export type LabelProps = React.DetailedHTMLProps<React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>
 export const Label = (props: LabelProps) => (
-  <label
-    {...props}
-    className={twMerge("text-gray-500 text-xs", props?.className)}
-  />
-);
+  <label {...props} className={twMerge("text-gray-500 text-xs", props?.className)} />
+)
