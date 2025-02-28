@@ -1,119 +1,136 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react"
-import { v4 } from "uuid"
-import { FaRegTrashCan, FaRotate, FaPlus } from "react-icons/fa6"
-import { Button, Container, Form } from "../ui"
-import { RCom } from "./components"
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { v4 } from "uuid";
+import { FaRegTrashCan, FaRotate, FaPlus } from "react-icons/fa6";
+import { Button, Container, Form } from "../ui";
+import { RCom } from "./components";
 
 interface Props {
-  payload?: Requirement
+  payload?: Requirement;
 
-  onCancel: () => void
+  onCancel: () => void;
 
-  onDone: (requirement: Requirement) => void
+  onDone: (requirement: Requirement) => void;
 }
 
 const RForm = ({ onCancel, onDone, payload }: Props) => {
-  const initialState = useMemo<Requirement>(() => {
-    return (
-      payload ?? {
+  const initialState = useMemo(() => {
+    if (payload) {
+      return payload;
+    }
+
+    return {
+      descs: [],
+      id: v4(),
+      manager: "",
+      status: "",
+      title: "",
+    };
+  });
+
+  const [requirement, setRequirement] = useState(initialState);
+
+  const [isInsertingDesc, setIsInsertingDesc] = useState<boolean>(false); // 내가 지금 작성하고 있는 아이템이 desc인지 확인용
+
+  const [desc, setDesc] = useState<string>("");
+
+  const [boolean, setBoolean] = useState<boolean>(false);
+  const boolHandler = useCallback(() => setBoolean((prev) => !prev), []);
+
+  const [directInserting, setDirectInserting] = useState<boolean>(false);
+
+  const titleRef = useRef<HTMLInputElement>(null); // 내가 연결하고 싶은 태그를 제네릭으로 전달
+  const descRef = useRef<HTMLInputElement>(null); // 내가 연결하고 싶은 태그를 제네릭으로 전달
+  const statusRef = useRef<HTMLSelectElement>(null); // 내가 연결하고 싶은 태그를 제네릭으로 전달
+  const managerRef = useRef<HTMLSelectElement>(null); // 내가 연결하고 싶은 태그를 제네릭으로 전달
+  const managerRef2 = useRef<HTMLInputElement>(null); // 내가 연결하고 싶은 태그를 제네릭으로 전달
+
+  const titleMessage = useMemo(() => {
+    if (requirement.title.length) {
+      return alert("요구사항 기능 이름을 적으세요");
+    }
+
+    if (requirement.status.length === 0) {
+      alert("진행상태를 선택해주세요.");
+      return setTimeout(() => statusRef.current?.showPicker());
+    }
+  }, [requirement.title]);
+  const statusMessage = useMemo(() => {
+    if (requirement.status.length) {
+      return alert("요구사항 기능 이름을 적으세요");
+    }
+
+    if (requirement.status.length === 0) {
+      alert("진행상태를 선택해주세요.");
+      return setTimeout(() => statusRef.current?.showPicker());
+    }
+  }, [requirement.title]);
+  const managerMessage = useMemo(() => {
+    if (directInserting) {
+      alert("담당자를 입력해주세요.");
+      return setTimeout(() => managerRef.current?.focus(), 100);
+    }
+  }, [requirement.title]);
+
+  useEffect(() => {
+    console.log({ titleMessage });
+  }, [titleMessage]);
+
+  const onSubmit = useCallback(() => {
+    if (isInsertingDesc) {
+      return;
+    }
+
+    if (titleMessage) {
+      alert(titleMessage);
+      return setTimeout(() => titleRef.current?.showPicker(), 100);
+    }
+
+    if (statusMessage) {
+      alert(titleMessage);
+      return setTimeout(() => titleRef.current?.showPicker(), 100);
+    }
+
+    if (requirement.manager.length === 0) {
+      if (directInserting) {
+        alert("담당자를 입력해주세요.");
+        return setTimeout(() => managerRef2.current?.focus(), 100);
+      }
+
+      alert("담당자를 선택해주세요.");
+      return setTimeout(() => managerRef.current?.showPicker(), 100);
+    }
+
+    alert(payload ? "요구사항을 수정했습니다." : "요구사항을 추가했습니다.");
+
+    onDone(requirement);
+
+    if (!payload) {
+      setRequirement({
         descs: [],
         id: v4(),
         manager: "",
         status: "",
         title: "",
-      }
-    )
-  }, [payload])
+      });
 
-  const [requirement, setRequirement] = useState(initialState)
-
-  const [isInsertingDesc, setIsInsertingDesc] = useState<boolean>(false) // 내가 지금 작성하고 있는 아이템이 desc인지 확인용
-
-  const [desc, setDesc] = useState<string>("")
-
-  const [directInserting, setDirectInserting] = useState<boolean>(false)
-
-  const titleRef = useRef<HTMLInputElement>(null) // 내가 연결하고 싶은 태그를 제네릭으로 전달
-  const descRef = useRef<HTMLInputElement>(null) // 내가 연결하고 싶은 태그를 제네릭으로 전달
-  const statusRef = useRef<HTMLSelectElement>(null) // 내가 연결하고 싶은 태그를 제네릭으로 전달
-  const managerRef = useRef<HTMLSelectElement>(null) // 내가 연결하고 싶은 태그를 제네릭으로 전달
-  const managerRef2 = useRef<HTMLInputElement>(null) // 내가 연결하고 싶은 태그를 제네릭으로 전달
-
-  const titleMessage = useMemo(() => {
-    const title = requirement.title
-    if (title.length === 0) {
-      return "요구사항 기능 이름을 적으세요."
+      setTimeout(() => titleRef.current?.focus(), 100);
+      return;
     }
-    if (title.length > 30) {
-      return "너무 긴 이름입니다."
-    }
-
-    return null
-  }, [requirement.title])
-
-  useEffect(() => {
-    console.log({ titleMessage })
-  }, [titleMessage])
-
-  // const onSubmit = useCallback(() => {
-  //   if (isInsertingDesc) {
-  //     return
-  //   }
-
-  //   if (titleMessage) {
-  //     alert(titleMessage)
-  //     return setTimeout(() => titleRef.current?.focus(), 100)
-  //   }
-
-  //   if (requirement.status.length === 0) {
-  //     alert("진행상태를 선택해주세요.")
-  //     return setTimeout(() => statusRef.current?.showPicker())
-  //   }
-
-  //   if (requirement.manager.length === 0) {
-  //     if (directInserting) {
-  //       alert("담당자를 입력해주세요.")
-  //       return setTimeout(() => managerRef2.current?.focus(), 100)
-  //     }
-
-  //     alert("담당자를 선택해주세요.")
-  //     return setTimeout(() => managerRef.current?.showPicker(), 100)
-  //   }
-
-  //   alert(payload ? "요구사항을 수정했습니다." : "요구사항을 추가했습니다.")
-
-  //   onDone(requirement)
-
-  //   if (!payload) {
-  //     setRequirement({
-  //       descs: [],
-  //       id: v4(),
-  //       manager: "",
-  //       status: "",
-  //       title: "",
-  //     })
-
-  //     setTimeout(() => titleRef.current?.focus(), 100)
-  //     return
-  //   }
-  //   onCancel()
-  // }, [])
-
-  const [boolean, setBoolean] = useState<boolean>(false)
-  const boolHandler = useCallback(() => setBoolean((prev) => !prev), [])
-  const onSubmit = useCallback(() => {
-    console.log(requirement)
-  }, [requirement])
+    onCancel();
+  }, []);
 
   useEffect(
     () => {
-      setTimeout(() => titleRef.current?.focus(), 100)
+      setTimeout(() => titleRef.current?.focus(), 100);
     },
     [] // 빈배열이란 해당 컴포넌트가 최초 렌데링 되는 시점에 딱 한 번 실행할 코드
-  )
+  );
 
   return (
-    <Form.Form className="gap-y-2.5 max-w-225 mx-auto p-5 md:px-0" onSubmit={onSubmit}>
+    <Form.Form
+      className="gap-y-2.5 max-w-225 mx-auto p-5 md:px-0"
+      onSubmit={onSubmit}
+    >
       <RCom.Input
         id="title"
         title="기능 이름"
@@ -138,21 +155,24 @@ const RForm = ({ onCancel, onDone, payload }: Props) => {
             onKeyDown: (e) => {
               if (e.key === "Enter") {
                 if (desc.length === 0) {
-                  alert("상세 내용을 입력해주세요.")
-                  return setTimeout(() => descRef.current?.focus(), 100)
+                  alert("상세 내용을 입력해주세요.");
+                  return setTimeout(() => descRef.current?.focus(), 100);
                 }
 
                 if (e.nativeEvent.isComposing) {
-                  return
+                  return;
                 }
-                setRequirement((prev) => ({ ...prev, descs: [...prev.descs, desc] }))
-                setDesc("")
-                setTimeout(() => descRef.current?.focus(), 100)
+                setRequirement((prev) => ({
+                  ...prev,
+                  descs: [...prev.descs, desc],
+                }));
+                setDesc("");
+                setTimeout(() => descRef.current?.focus(), 100);
               } else if (e.key === "Tab") {
-                setIsInsertingDesc(false)
-                setTimeout(() => statusRef.current?.showPicker(), 100)
+                setIsInsertingDesc(false);
+                setTimeout(() => statusRef.current?.showPicker(), 100);
               }
-              console.log(e.key)
+              console.log(e.key);
             },
           }}
         >
@@ -165,11 +185,11 @@ const RForm = ({ onCancel, onDone, payload }: Props) => {
                     type="button"
                     className="cursor-pointer hover:text-red-500"
                     onClick={() => {
-                      const descs = [...requirement.descs]
+                      const descs = [...requirement.descs];
 
-                      descs.splice(index, 1)
+                      descs.splice(index, 1);
 
-                      setRequirement((prev) => ({ ...prev, descs }))
+                      setRequirement((prev) => ({ ...prev, descs }));
                     }}
                   >
                     <FaRegTrashCan />
@@ -182,8 +202,8 @@ const RForm = ({ onCancel, onDone, payload }: Props) => {
 
         <Button.Opacity
           onClick={() => {
-            setIsInsertingDesc(true)
-            setTimeout(() => descRef.current?.focus(), 100)
+            setIsInsertingDesc(true);
+            setTimeout(() => descRef.current?.focus(), 100);
           }}
         >
           <FaPlus />
@@ -195,13 +215,16 @@ const RForm = ({ onCancel, onDone, payload }: Props) => {
           <RCom.Select
             id="status"
             onSelectOption={(status) => {
-              setRequirement((prev) => ({ ...prev, status: status as RequirementStatus }))
+              setRequirement((prev) => ({
+                ...prev,
+                status: status as RequirementStatus,
+              }));
               setTimeout(() => {
                 if (directInserting) {
-                  return managerRef2.current?.focus()
+                  return managerRef2.current?.focus();
                 }
-                managerRef.current?.showPicker()
-              }, 100)
+                managerRef.current?.showPicker();
+              }, 100);
             }}
             options={statuses}
             placeholder="선택"
@@ -217,11 +240,17 @@ const RForm = ({ onCancel, onDone, payload }: Props) => {
                   id="manager1"
                   onSelectOption={(value) => {
                     if (value === "직접 입력") {
-                      setRequirement((prev) => ({ ...prev, manager: "" }))
-                      setDirectInserting(true)
-                      return setTimeout(() => managerRef2.current?.focus(), 100)
+                      setRequirement((prev) => ({ ...prev, manager: "" }));
+                      setDirectInserting(true);
+                      return setTimeout(
+                        () => managerRef2.current?.focus(),
+                        100
+                      );
                     }
-                    setRequirement((prev) => ({ ...prev, manager: value as RequirementManager }))
+                    setRequirement((prev) => ({
+                      ...prev,
+                      manager: value as RequirementManager,
+                    }));
                   }}
                   options={["직접 입력", ...managers]}
                   placeholder="담당자 선택"
@@ -235,7 +264,10 @@ const RForm = ({ onCancel, onDone, payload }: Props) => {
                 <RCom.Input
                   id="manager2"
                   onChangeText={(manager) =>
-                    setRequirement((prev) => ({ ...prev, manager: manager as RequirementManager }))
+                    setRequirement((prev) => ({
+                      ...prev,
+                      manager: manager as RequirementManager,
+                    }))
                   }
                   placeholder={managers[0]}
                   ref={managerRef2}
@@ -244,9 +276,9 @@ const RForm = ({ onCancel, onDone, payload }: Props) => {
                 />
                 <Button.Opacity
                   onClick={() => {
-                    setRequirement((prev) => ({ ...prev, manager: "" }))
-                    setDirectInserting(false)
-                    setTimeout(() => managerRef.current?.showPicker(), 100)
+                    setRequirement((prev) => ({ ...prev, manager: "" }));
+                    setDirectInserting(false);
+                    setTimeout(() => managerRef.current?.showPicker(), 100);
                   }}
                 >
                   <FaRotate />
@@ -257,7 +289,10 @@ const RForm = ({ onCancel, onDone, payload }: Props) => {
         </Container.Row>
 
         <Container.Row className="flex-1">
-          <Button.Opacity type="submit" className="bg-sky-500 text-white flex-3">
+          <Button.Opacity
+            type="submit"
+            className="bg-sky-500 text-white flex-3"
+          >
             {/* 삼항 연산자
                 조건 ? 코드1 : 코드2
                 조건이 참이거나 부합할 때 코드1을 실행
@@ -269,10 +304,16 @@ const RForm = ({ onCancel, onDone, payload }: Props) => {
         </Container.Row>
       </Container.Row>
     </Form.Form>
-  )
-}
+  );
+};
 
-export default RForm
+export default RForm;
 
-const statuses: RequirementStatus[] = ["계획중", "진행중", "완료"]
-const managers: RequirementManager[] = ["강산", "강찬희", "김영화", "유경환", "허승이"]
+const statuses: RequirementStatus[] = ["계획중", "진행중", "완료"];
+const managers: RequirementManager[] = [
+  "강산",
+  "강찬희",
+  "김영화",
+  "유경환",
+  "허승이",
+];

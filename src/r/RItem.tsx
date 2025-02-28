@@ -1,20 +1,35 @@
-import { useState } from "react"
-import { FaRegTrashCan, FaPen } from "react-icons/fa6"
-import RForm from "./RForm"
+import { useState, memo, useEffect, useCallback } from "react";
+import { FaRegTrashCan, FaPen } from "react-icons/fa6";
+import RForm from "./RForm";
+
+//! memo, useMemo memo
+//! memoize
+//! 수시로 바뀌는 배열
 
 interface Props {
-  payload: Requirement
-  onDelete: (id: string) => void
-  onEdit: (targetRequirement: Requirement) => void
+  payload: Requirement;
+  onDelete: (id: string) => void;
+  onEdit: (targetRequirement: Requirement) => void;
 }
 
 const RItem = ({ onDelete, onEdit, payload }: Props) => {
-  const [isHovering, setIsHovering] = useState<boolean>(false)
-  const [isEditing, setIsEditing] = useState<boolean>(false)
-  const editHandler = () => setIsEditing((prev) => !prev)
+  const [isHovering, setIsHovering] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const editHandler = () =>
+    useCallback(
+      setIsEditing((prev) => !prev),
+      []
+    );
+
+  useEffect(() => {
+    console.log("handler re-redered");
+  }, [editHandler]);
 
   return (
-    <li onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+    <li
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
       {isEditing ? (
         <RForm payload={payload} onCancel={editHandler} onDone={onEdit} />
       ) : (
@@ -44,10 +59,17 @@ const RItem = ({ onDelete, onEdit, payload }: Props) => {
 
           {isHovering && (
             <div className="flex justify-end gap-x-2.5">
-              <button className={button.concat(" hover:text-sky-500")} title="수정" onClick={editHandler}>
+              <button
+                className={button.concat(" hover:text-sky-500")}
+                title="수정"
+                onClick={editHandler}
+              >
                 <FaPen />
               </button>
-              <button className={button.concat(" hover:text-red-500")} onClick={() => onDelete(payload.id)}>
+              <button
+                className={button.concat(" hover:text-red-500")}
+                onClick={() => onDelete(payload.id)}
+              >
                 <FaRegTrashCan />
               </button>
             </div>
@@ -55,10 +77,10 @@ const RItem = ({ onDelete, onEdit, payload }: Props) => {
         </div>
       )}
     </li>
-  )
-}
+  );
+};
 
-export default RItem
+export default memo(RItem);
 
 const button =
-  "h-8 w-8 rounded flex items-center justify-center bg-gray-50 hover:opacity-80 hover:bg-gray-100 active:opacity-50 text-gray-500 cursor-pointer text-xs"
+  "h-8 w-8 rounded flex items-center justify-center bg-gray-50 hover:opacity-80 hover:bg-gray-100 active:opacity-50 text-gray-500 cursor-pointer text-xs";
