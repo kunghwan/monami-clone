@@ -1,9 +1,7 @@
+import React from "react";
+
 const RequirementDetail = () => {
-  return (
-    <div>
-      <h1>RequirementDetail</h1>
-    </div>
-  );
+  return <div>RequirementDetail</div>;
 };
 
 export default RequirementDetail;

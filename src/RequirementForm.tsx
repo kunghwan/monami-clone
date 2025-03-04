@@ -1,9 +1,7 @@
+import React from "react";
+
 const RequirementForm = () => {
-  return (
-    <div>
-      <h1>RequirementForm</h1>
-    </div>
-  );
+  return <div>RequirementForm</div>;
 };
 
 export default RequirementForm;
