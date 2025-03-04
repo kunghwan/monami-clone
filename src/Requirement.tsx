@@ -1,18 +1,25 @@
 import { Link } from "react-router-dom";
-import { Item, Alert } from "./store";
+import { Alert, Item } from "./store";
 
 const Requirement = () => {
-  const { items, remove, payload } = Item.use();
+  const { items, remove, setPayload } = Item.use();
+  const { alert } = Alert.use();
   return (
     <div>
-      <h1>요구사항 명세 내용 출력</h1>
-
+      요구사항 명세 내용 출력
       <ul>
         {items.map((item, index) => (
           <li key={item.id}>
-            <Link to={item.id} onClick={() => setPayl}>
-              {index + 1}. {item.status}
-              <button onClick={() => remove(item.id)}>삭제</button>
+            <Link to={item.id} onClick={() => setPayload(item)}>
+              {index + 1}. {item.title} {item.status} {item.manager}
+              <button
+                onClick={() => {
+                  remove(item.id);
+                  alert("삭제되었습니다.");
+                }}
+              >
+                삭제
+              </button>
             </Link>
           </li>
         ))}

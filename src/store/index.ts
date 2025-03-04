@@ -1,2 +1,2 @@
 export * as Alert from "./alertStore";
-export * as Itemst from "./itemStore";
+export * as Item from "./itemStore";
