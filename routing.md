@@ -22,6 +22,6 @@ navi('멋진경로') //! 현재 경로 + 새로운 경로
 navi('/멋진경로') //! 새로운 경로
 
 eg) 현재경로 = '/requirement'
-navi('newpath') //예상 경로 :/requirment/newpath
-navi('/newpath') //예상 경로 : /path
+navi('newpath') //예상 경로 :/
+navi('/newpath') //예상 경로 :
 ```

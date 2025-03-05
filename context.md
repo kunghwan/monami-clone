@@ -5,3 +5,7 @@
 2. 페이지 별 상태 호환 안됨
 
 3. props-drlling 너무 많이하면 귀찮음
+
+## Context Api Vs Zustand
+
+리액트 훅이 필요하면 Context, 필요 없으면 Zustand가 체감상 50배는 빠름
