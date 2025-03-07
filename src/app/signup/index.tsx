@@ -1,3 +1,4 @@
+import byrypt from "bcryptjs";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Form, Button, Typo } from "../../components";
 import { useCallback, useState, useMemo, useRef } from "react";
@@ -14,8 +15,11 @@ import {
   heightWeightValidator,
   mobileValidator,
   stringValidator,
+  authService,
+  dbService,
 } from "../../lib";
 import { Alert } from "../../contexts";
+import bcrypt from "bcryptjs";
 
 const Signup = () => {
   const content = useSearchParams()[0].get("content");
@@ -466,6 +470,18 @@ const Signup = () => {
         if (pointMessage) {
           return alert(pointMessage, [{ onClick: () => focus("points") }]);
         }
+
+        const fn = async () => {
+          try {
+            const ref = dbService.collection("users").doc(props.id);
+            const hashedPassword = await bcrypt.hash(pws.pw, 12);
+
+            await ref.set({ ...props, password: hashedPassword });
+            alert("회원가입을 축하합니다");
+          } catch (error: any) {
+            return alert(error.message);
+          }
+        };
 
         return console.log(props);
     }
