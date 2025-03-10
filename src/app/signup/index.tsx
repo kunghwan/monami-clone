@@ -1,4 +1,4 @@
-import byrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Form, Button, Typo } from "../../components";
 import { useCallback, useState, useMemo, useRef } from "react";
@@ -15,11 +15,10 @@ import {
   heightWeightValidator,
   mobileValidator,
   stringValidator,
-  authService,
   dbService,
 } from "../../lib";
 import { Alert } from "../../contexts";
-import bcrypt from "bcryptjs";
+import { v4 } from "uuid";
 
 const Signup = () => {
   const content = useSearchParams()[0].get("content");
@@ -394,7 +393,7 @@ const Signup = () => {
   );
 
   const { alert } = Alert.use();
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     const next = () => navi(`/signup?content=${Number(content) + 1}`);
 
     if (!content) {
@@ -471,19 +470,25 @@ const Signup = () => {
           return alert(pointMessage, [{ onClick: () => focus("points") }]);
         }
 
-        const fn = async () => {
-          try {
-            const ref = dbService.collection("users").doc(props.id);
-            const hashedPassword = await bcrypt.hash(pws.pw, 12);
+        try {
+          const id = v4();
+          const hashPassword = await bcrypt.hash(pws.pw, 12);
 
-            await ref.set({ ...props, password: hashedPassword });
-            alert("회원가입을 축하합니다");
-          } catch (error: any) {
-            return alert(error.message);
-          }
-        };
+          const newUser: User = { ...props, id };
+          const ref = dbService.collection("users").doc(id);
 
-        return console.log(props);
+          await ref.set({ ...newUser, password: hashPassword });
+
+          localStorage.setItem("uid", JSON.stringify(id));
+          console.log("uid stored");
+
+          alert("회원가입을 축하합니다.");
+          navi("/survey");
+        } catch (error: any) {
+          return alert(error.message);
+        }
+
+        return;
     }
   }, [
     navi,
@@ -509,6 +514,7 @@ const Signup = () => {
     interestMessage,
     pointMessage,
     props,
+    pws.pw,
   ]);
 
   return (

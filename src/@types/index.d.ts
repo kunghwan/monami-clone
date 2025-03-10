@@ -102,8 +102,9 @@ type UserBodyType =
 interface Survey {
   q: string;
   answers: string[];
-  isMultiple: boolean;
   options: string[];
-  id: string;
+  id: string; // v4() 랜덤 무작위로 생성 유저와 관계를 알기 어렵다.
+  //! id => user id를 씀
+  isMultiple: boolean;
   createdAt: string;
 }
