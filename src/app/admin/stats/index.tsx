@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { dbService } from "../../../lib";
-import { Button, Container } from "../../../components";
+import { Container } from "../../../components";
 import PercentageBar from "./PercentageBar";
 
 interface SurveyResponse {
@@ -47,7 +47,7 @@ const AdminStatsPage = () => {
     return subSurvey;
   }, []);
 
-  const onCheck = useCallback(() => {
+  useEffect(() => {
     const res = Array.from({ length: surveys.length }, (_, i) =>
       Array.from(
         {
@@ -69,27 +69,25 @@ const AdminStatsPage = () => {
       });
     });
 
-    console.log(res);
-
     const total = res.map((r) => {
       return r.reduce((a, b) => a + b, 0);
     });
 
-    console.log(total);
-
     const totalPercentages = res.map((rs, ri) => {
       const t = total[ri];
-      rs.map((rs, rsi) => {
+      return rs.map((rs) => {
         const per = (rs / t) * 100;
-        console.log(
-          `${ri + 1}번째 질문의 ${rsi + 1}번째 답변률은 ${per.toFixed(
-            2
-          )}%입니다.`
-        );
+        // console.log(
+        //   `${ri + 1}번째 질문의 ${rsi + 1}번째 답변률은 ${per.toFixed(
+        //     2
+        //   )}%입니다.`
+        // );
+
+        return per;
       });
     });
 
-    console.log(totalPercentages);
+    setPercentages(totalPercentages);
   }, [surveys, responses]);
 
   useEffect(() => {
@@ -100,9 +98,9 @@ const AdminStatsPage = () => {
     <ul className="flex flex-col gap-y-5 max-w-100 mx-auto mt-5">
       {percentages.map((p, pi) => (
         <li key={pi} className="flex flex-col gap-y-2.5">
-          <Container.Row className="flex-wrap items-center gap-x-1">
+          <Container.Row className="flex-wrap items-center gap-x-2.5">
             <p className="text-xl font-bold">
-              {pi + 1}.{surveys[pi].q}
+              Q{pi + 1}. {surveys[pi].q}
             </p>
             <p className="text-xs text-gray-500">
               {surveys[pi].isMultiple && "(중복선택가능)"}
@@ -113,9 +111,7 @@ const AdminStatsPage = () => {
             {surveys[pi].options.map((option, oi) => {
               return (
                 <li key={oi}>
-                  <Container.Row className="justify-between">
-                    {option} <PercentageBar per={p[oi]} answer={option} />
-                  </Container.Row>
+                  <PercentageBar per={p[oi]} answer={option} />
                 </li>
               );
             })}
